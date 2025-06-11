@@ -1,0 +1,29 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*.so
+
+# Environment
+.env
+env.py
+
+# VSCode settings 
+.vscode/
+
+# Image folders
+captured_images/
+
+# Database or migration artifacts
+*.db
+instance/
+migrations/versions/
+
+# OS or editor-specific
+.DS_Store
+Thumbs.db
+
+# Logs (optional)
+*.log
+
+# Pytest cache
+.pytest_cache/
