@@ -126,32 +126,10 @@
       </div>
 
       <div class="d-flex justify-content-between mt-4">
-        <button
-          type="button"
-          class="btn btn-secondary"
-          id="capturePhotoBtn"
-          onclick="detect_from_webcam()"
-        >
-          Capture Photo
-        </button>
         <button type="submit" class="btn btn-primary">Submit Enrollment</button>
       </div>
     </form>
-    <script>
-      document
-        .getElementById("capturePhotoBtn")
-        .addEventListener("click", () => {
-          fetch("/capture", { method: "POST" })
-            .then((response) => response.text())
-            .then((data) => {
-              document.getElementById("responseText").innerText = data;
-            })
-            .catch((error) => {
-              document.getElementById("responseText").innerText =
-                "Error: " + error;
-            });
-        });
-    </script>
+
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"

@@ -39,6 +39,8 @@ class Student(db.Model):
     phone = db.Column(db.String(20), nullable=False)
     address = db.Column(db.String(200))
     course = db.Column(db.String(100), nullable=False)
+    image_path = db.Column(db.String(150))  # for storing captured image path
+
 
 #MIGRATE SHOULD COME AFTER THE MODEL
 migrate = Migrate(app,db)
@@ -91,6 +93,7 @@ def enroll():
         try:
             db.session.add(new_student)
             db.session.commit()
+            student_id = new_student.id  # generated ID
 
             # Send confirmation email
             msg = Message("Enrollment Confirmation",
@@ -115,16 +118,16 @@ Attendance System Admin
 '''
             mail.send(msg)
             
-
-            return render_template('success.html', student=new_student)
+            # Redirect to capture face page with student_id
+            return render_template('capture.html', student_id=student_id)
         except Exception as e:
             return f"An error occurred: {e}"
         
     return render_template('enroll.html')
 
-@app.route('/capture' , methods=['POST'])
-def capture():
-    result = detect_from_webcam()
+@app.route('/capture/<int:student_id>' , methods=['POST'])
+def capture(student_id):
+    result = detect_from_webcam(student_id)
     return result
 
 @app.route('/students')
@@ -132,6 +135,9 @@ def students():
     all_students = Student.query.all()
     return render_template('data.html', students = all_students)
 
+@app.route('/success')
+def success():
+    return render_template('success.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
