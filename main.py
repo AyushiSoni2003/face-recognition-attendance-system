@@ -42,6 +42,20 @@ class Student(db.Model):
     address = db.Column(db.String(200))
     course = db.Column(db.String(100), nullable=False)
     image_path = db.Column(db.String(150))  # for storing captured image path
+    attendances = db.relationship('Attendance', back_populates='student')
+
+
+#Define an Attendance model
+class Attendance(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    student_id = db.Column(db.Integer, db.ForeignKey('student.id'), nullable=False)
+    student_name = db.Column(db.String(100), nullable = False)
+    timestamp = db.Column(db.DateTime, default=datetime.now)
+    status = db.Column(db.String(10), default='Absent')  # 'Present' or 'Absent'
+    # Relationship to Student
+    student = db.relationship('Student', back_populates='attendances')
+
+
 
 #Define the Admin model
 class Admin(db.Model):
@@ -58,11 +72,6 @@ def home():
     return render_template('home.html')
 
 
-@app.route('/attendance')
-def attendance():
-    current_date = datetime.now().strftime("%d-%m-%Y")
-    current_time = datetime.now().strftime("%H:%M %p")
-    return render_template('attendance.html' , date = current_date , time = current_time)
 
 
 # Route: Handle form submission
@@ -180,7 +189,37 @@ def success():
 @app.route('/mark_attendance' , methods = ['GET'])
 def mark_attendance_route():
     result  = mark_attendance()
+    if result['Student Id'] != "Unknown":
+        # Create a new Attendance record
+        attendance_record = Attendance(
+            student_id=result['Student Id'],
+            student_name=result['Student Name'],
+            status=result['Attendance'],
+            timestamp = datetime.now().strftime("%d-%m-%Y")
+        ) 
+
+        db.session.add(attendance_record)
+        db.session.commit()
     return render_template('attendance_result.html', result=result)
+
+@app.route('/attendance')
+def attendance():
+    current_date = datetime.now().strftime("%d-%m-%Y")
+    current_time = datetime.now().strftime("%H:%M %p")
+    students = Student.query.all()
+    attendance_data = {}
+    for student in students:
+        records = Attendance.query.filter_by(student_id=student.id).all()
+        student_attendance = {}
+        for record in records:
+            student_attendance[record.date] = record.status
+        attendance_data[student.id] = student_attendance
+
+    return render_template("attendance.html", 
+                        date=current_date, 
+                        time=current_time,
+                        students=students, 
+                        attendance_data=attendance_data)
 
 
 @app.route('/data')

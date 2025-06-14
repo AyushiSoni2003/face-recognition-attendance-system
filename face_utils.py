@@ -103,19 +103,19 @@ def mark_attendance():
     video_capture = cv2.VideoCapture(0)
     if not video_capture.isOpened():
         return {
-            "attendance": "A",
-            "student_name": "Unknown",
-            "student_id": "Unknown",
-            "timestamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "Attendance": "Absent",
+            "Student Name": "Unknown",
+            "Student Id": "Unknown",
+            "Timestamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "error": "Could not open webcam"
         }
 
     print("Camera is on. Detecting face...")
     result = {
-        "attendance": "A",
-        "student_name": "Unknown",
-        "student_id": "Unknown",
-        "timestamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        "Attendance": "Absent",
+        "Student Name": "Unknown",
+        "Student Id": "Unknown",
+        "Timestamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     }
 
     while True:
@@ -150,13 +150,13 @@ def mark_attendance():
                 matched_idx = matches.index(True)
                 name = known_names[matched_idx]
                 result = {
-                    "attendance": "P",
-                    "student_name": known_names[matched_idx],
-                    "student_id": known_ids[matched_idx],
-                    "timestamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    "Attendance": "Present",
+                    "Student Name": known_names[matched_idx],
+                    "Student Id": known_ids[matched_idx],
+                    "Timestamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 }
             else:
-                result["attendance"] = "A"
+                result["Attendance"] = "Absent"
 
             video_capture.release()
             cv2.destroyAllWindows()

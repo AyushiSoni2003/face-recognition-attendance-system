@@ -47,34 +47,22 @@
             <th colspan="5">Week 4</th>
           </tr>
           <tr>
+            {% for _ in range(4) %}
             <th>M</th>
             <th>T</th>
             <th>W</th>
             <th>Th</th>
             <th>F</th>
-            <th>M</th>
-            <th>T</th>
-            <th>W</th>
-            <th>Th</th>
-            <th>F</th>
-            <th>M</th>
-            <th>T</th>
-            <th>W</th>
-            <th>Th</th>
-            <th>F</th>
-            <th>M</th>
-            <th>T</th>
-            <th>W</th>
-            <th>Th</th>
-            <th>F</th>
+            {% endfor %}
           </tr>
         </thead>
         <tbody>
-          {% for i in range(10) %}
+          {% for student in students %}
           <tr>
-            <td></td>
-            {% for j in range(20) %}
-            <td></td>
+            <td>{{ student.full_name }}</td>
+            {% for day in range(1, 21) %} {% set date_key =
+            '{:02d}-06-2025'.format(day) %}
+            <td>{{ attendance_data[student.id].get(date_key, '') }}</td>
             {% endfor %}
           </tr>
           {% endfor %}
