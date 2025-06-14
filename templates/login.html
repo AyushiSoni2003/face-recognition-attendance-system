@@ -46,6 +46,19 @@
     </style>
   </head>
   <body>
+    <!-- Flash message container -->
+    <div
+      class="position-absolute top-0 start-50 translate-middle-x mt-4"
+      style="z-index: 1050; width: 100%; max-width: 500px"
+    >
+      {% with messages = get_flashed_messages() %} {% if messages %}
+      <ul>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %} {% endwith %}
+    </div>
     <div class="login-card">
       <form method="POST" action="/login">
         <div class="text-center mb-4">
@@ -57,7 +70,7 @@
             height="57"
           />
 
-          <h1 class="h4 mb-2 mt-2 fw-semibold text-primary">Please sign in</h1>
+          <h1 class="h4 mb-2 mt-2 fw-semibold text-primary">Please Log in</h1>
         </div>
 
         <div class="form-floating mb-3">

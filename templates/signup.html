@@ -29,7 +29,7 @@
   <body>
     <div class="d-flex justify-content-center align-items-center min-vh-100">
       <main class="form-container">
-        <form>
+        <form method="POST" action="{{ url_for('signup')}}">
           <div class="text-center mb-4">
             <h1 class="h4 mt-2 fw-semibold">Create your account</h1>
           </div>
@@ -38,6 +38,7 @@
             <input
               type="email"
               class="form-control"
+              name="email"
               id="email"
               placeholder="name@example.com"
               required
@@ -47,30 +48,9 @@
 
           <div class="form-floating">
             <input
-              type="text"
-              class="form-control"
-              id="username"
-              placeholder="Username"
-              required
-            />
-            <label for="username">Username</label>
-          </div>
-
-          <div class="form-floating">
-            <input
-              type="text"
-              class="form-control"
-              id="class"
-              placeholder="Class"
-              required
-            />
-            <label for="class">Class</label>
-          </div>
-
-          <div class="form-floating">
-            <input
               type="password"
               class="form-control"
+              name="password"
               id="password"
               placeholder="Password"
               required
@@ -78,11 +58,9 @@
             <label for="password">Password</label>
           </div>
 
-          <a
-            href="{{ url_for('data') }}"
-            class="btn btn-lg btn-light fw-bold border-white bg-white"
-            >Sign Up</a
-          >
+          <button type="submit" class="btn btn-outline-secondary btn-custom">
+            Sign Up
+          </button>
 
           <p class="mt-4 text-center text-muted small">
             By signing up, you agree to our

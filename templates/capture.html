@@ -53,7 +53,7 @@
           alt="Success"
           class="mx-auto success-icon mb-4"
         />
-        <h1 class="display-6 text-success">Enrollment Done!</h1>
+        <h1 class="display-6 text-success">Confirmation mail sent</h1>
         <p class="lead mb-4">Click to add your face.</p>
         <div class="d-flex justify-content-center gap-3">
           <button type="button" class="btn btn-secondary" id="capturePhotoBtn">
@@ -70,10 +70,11 @@
     </div>
     <script>
       const student_id = {{ student_id | tojson }};
+      const student_name = {{ student_name | tojson }};
       document
         .getElementById("capturePhotoBtn")
         .addEventListener("click", () => {
-          fetch(`/capture/${student_id}`, { method: "POST" })
+          fetch(`/capture/${student_id}/${student_name}`, { method: "POST" })
             .then((response) => response.text())
             .then((data) => {
               document.getElementById("responseText").innerText = data;

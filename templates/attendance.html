@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Attendance Sheet</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        table-layout: fixed;
+      }
+      th,
+      td {
+        border: 1px solid black;
+        text-align: center;
+        padding: 5px;
+        font-size: 14px;
+      }
+      input[type="text"] {
+        width: 150px;
+        padding: 5px;
+        margin-bottom: 10px;
+      }
+      .form-control {
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h2 style="text-align: center" class="mb-0">Attendance Sheet</h2>
+
+    <form>
+      <div class="form-control">
+        <b>Date:</b> {{date }} <br /><b>Time: </b>{{time}}
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th rowspan="2">Name</th>
+            <th colspan="5">Week 1</th>
+            <th colspan="5">Week 2</th>
+            <th colspan="5">Week 3</th>
+            <th colspan="5">Week 4</th>
+          </tr>
+          <tr>
+            <th>M</th>
+            <th>T</th>
+            <th>W</th>
+            <th>Th</th>
+            <th>F</th>
+            <th>M</th>
+            <th>T</th>
+            <th>W</th>
+            <th>Th</th>
+            <th>F</th>
+            <th>M</th>
+            <th>T</th>
+            <th>W</th>
+            <th>Th</th>
+            <th>F</th>
+            <th>M</th>
+            <th>T</th>
+            <th>W</th>
+            <th>Th</th>
+            <th>F</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for i in range(10) %}
+          <tr>
+            <td></td>
+            {% for j in range(20) %}
+            <td></td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <br />
+      <button type="submit" onclick="window.print()">Print Attendance</button>
+    </form>
+  </body>
+</html>
