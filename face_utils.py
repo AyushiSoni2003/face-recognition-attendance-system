@@ -2,7 +2,8 @@ import face_recognition
 import cv2
 import os
 import datetime
-
+from PIL import Image
+import numpy as np
 
 # Load Haar Cascade classifiers
 face_cascade = cv2.CascadeClassifier('haarcascades/haarcascade_frontalface_default.xml')
@@ -32,12 +33,20 @@ def detect_from_webcam(student_id , student_name):
 
             if not face_saved:
                 face_img = frame[y:y+h, x:x+w]
+                if face_img.size == 0:
+                    print("Face image is empty. Skipping save.")
+                    continue
+
+                # Convert to RGB (OpenCV loads in BGR)
                 face_img_rgb = cv2.cvtColor(face_img, cv2.COLOR_BGR2RGB)
+
+                # Save using PIL for guaranteed format
+                pil_image = Image.fromarray(face_img_rgb)
                 os.makedirs("captured_images", exist_ok=True)
                 name = student_name.replace(" ", "_")
                 filename = os.path.join("captured_images", f"{name}_{student_id}.jpg")
-                cv2.imwrite(filename, cv2.cvtColor(face_img_rgb, cv2.COLOR_RGB2BGR))  # Save back in BGR for consistency
-                print(f"Saved face image: {filename}")
+                pil_image.save(filename, format="JPEG")
+                print(f"✅ Saved face image: {filename}")
                 face_saved = True
 
         # Show the frame with rectangles (if any)
@@ -52,7 +61,6 @@ def detect_from_webcam(student_id , student_name):
     return "Face detected and saved" if face_saved else "No face detected"
 
 
-
 def mark_attendance():
     # Step 1: Load and encode all known faces
     known_encodings = []
@@ -65,7 +73,7 @@ def mark_attendance():
         if filename.endswith(".jpg") or filename.endswith(".png"):
             path = os.path.join(image_dir, filename)
             name_id = os.path.splitext(filename)[0]  # removes the file extension
-            
+
             parts = name_id.rsplit("_", 1)
             if len(parts) == 2:
                 student_name = parts[0].replace("_", " ").title()
@@ -74,13 +82,23 @@ def mark_attendance():
                 student_name = name_id.replace("_", " ").title()
                 student_id = "Unknown"
 
-            image = face_recognition.load_image_file(path)
-            encodings = face_recognition.face_encodings(image)
-            if encodings:
-                known_encodings.append(encodings[0])
-                known_names.append(student_name)
-                known_ids.append(student_id)
+            try:
+                # Load with Pillow and convert to RGB for safety
+                pil_img = Image.open(path).convert("RGB")
+                image = np.array(pil_img)
 
+                # Now encode the face
+                encodings = face_recognition.face_encodings(image)
+                if encodings:
+                    known_encodings.append(encodings[0])
+                    known_names.append(student_name)
+                    known_ids.append(student_id)
+            except Exception as e:
+                print(f"❌ Failed to process {filename}: {e}")
+                # need to close camera here , in case of exception
+                continue
+
+     
     # Step 2: Open webcam and capture one frame
     video_capture = cv2.VideoCapture(0)
     if not video_capture.isOpened():
@@ -102,11 +120,24 @@ def mark_attendance():
 
     while True:
         ret, frame = video_capture.read()
-        if not ret:
+        if not ret or frame is None:
+            print("Error: Frame not read from webcam.")
             break
 
         small_frame = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
+
+        # Check for valid frame shape before converting
+        if small_frame is None or small_frame.ndim != 3 or small_frame.shape[2] != 3:
+            print("Error: Frame is not a valid RGB image.")
+            break
+
+        # Convert the frame from BGR to RGB
         rgb_small_frame = cv2.cvtColor(small_frame, cv2.COLOR_BGR2RGB)
+
+        # Safety check for dtype
+        if rgb_small_frame.dtype != 'uint8':
+            print("Error: Frame is not uint8 type.")
+            break
 
         # Step 3: Detect and encode face(s) in the webcam frame
         face_locations = face_recognition.face_locations(rgb_small_frame)
@@ -132,10 +163,13 @@ def mark_attendance():
             return result
 
         # Show webcam feed (optional)
-        cv2.imshow('Recognition - Press Q to quit', frame)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
+        SHOW_FEED = False
+        if SHOW_FEED:
+            cv2.imshow('Recognition - Press Q to quit', frame)
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
 
     video_capture.release()
     cv2.destroyAllWindows()
     return result
+
