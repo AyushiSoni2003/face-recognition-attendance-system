@@ -57,24 +57,6 @@ This project is a **Face Recognition Based Attendance System** built using Pytho
 
 ---
 
-## 🗂️ Project Structure
-
-Face Recognition Attendance System/
-├── main.py  # Main Flask app
-├── templates/ # HTML templates
-├── static/ # Static files
-├── face_utils/ # Face detection logic
-├── screenshots/
-├── instance/attendance.db
-├── captured_images
-├── haarcascades
-├── migrations
-├── README.md
-└── requirements.txt
-
-
----
-
 ## ⚙️ Technologies Used
 
 - Python
