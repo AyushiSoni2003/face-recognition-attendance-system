@@ -103,7 +103,7 @@ def mark_attendance():
     video_capture = cv2.VideoCapture(0)
     if not video_capture.isOpened():
         return {
-            "Attendance": "Absent",
+            "Attendance": "A",
             "Student Name": "Unknown",
             "Student Id": "Unknown",
             "Timestamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
@@ -112,7 +112,7 @@ def mark_attendance():
 
     print("Camera is on. Detecting face...")
     result = {
-        "Attendance": "Absent",
+        "Attendance": "A",
         "Student Name": "Unknown",
         "Student Id": "Unknown",
         "Timestamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -150,13 +150,13 @@ def mark_attendance():
                 matched_idx = matches.index(True)
                 name = known_names[matched_idx]
                 result = {
-                    "Attendance": "Present",
+                    "Attendance": "P",
                     "Student Name": known_names[matched_idx],
                     "Student Id": known_ids[matched_idx],
                     "Timestamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 }
             else:
-                result["Attendance"] = "Absent"
+                result["Attendance"] = "A"
 
             video_capture.release()
             cv2.destroyAllWindows()

@@ -1,11 +1,33 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Attendance Sheet</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT"
+      crossorigin="anonymous"
+    />
     <style>
       body {
-        font-family: Arial, sans-serif;
+        background: linear-gradient(to right, #8bf8c0, #f6ffb3);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
         padding: 20px;
+      }
+      .container-box {
+        background: linear-gradient(to right, #a1ffce, #faffd1);
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        width: 100%;
+        max-width: 95vw;
+        overflow-x: auto;
       }
       table {
         border-collapse: collapse;
@@ -14,63 +36,74 @@
       }
       th,
       td {
-        border: 1px solid black;
+        border: 1px solid #000;
         text-align: center;
         padding: 5px;
         font-size: 14px;
       }
-      input[type="text"] {
-        width: 150px;
-        padding: 5px;
-        margin-bottom: 10px;
+      td.present {
+        color: green !important;
+        font-weight: bold;
       }
-      .form-control {
-        margin-bottom: 10px;
+      td.absent {
+        color: red !important;
+        font-weight: bold;
+      }
+      button {
+        margin-top: 20px;
       }
     </style>
   </head>
   <body>
-    <h2 style="text-align: center" class="mb-0">Attendance Sheet</h2>
+    <div class="container-box">
+      <h3 class="text-center mb-4">Attendance Sheet</h3>
 
-    <form>
-      <div class="form-control">
-        <b>Date:</b> {{date }} <br /><b>Time: </b>{{time}}
-      </div>
+      <form>
+        <div class="mb-3">
+          <strong>Date:</strong> {{ current_date }}<br />
+          <strong>Time:</strong> {{ time }}
+        </div>
 
-      <table>
-        <thead>
-          <tr>
-            <th rowspan="2">Name</th>
-            <th colspan="5">Week 1</th>
-            <th colspan="5">Week 2</th>
-            <th colspan="5">Week 3</th>
-            <th colspan="5">Week 4</th>
-          </tr>
-          <tr>
-            {% for _ in range(4) %}
-            <th>M</th>
-            <th>T</th>
-            <th>W</th>
-            <th>Th</th>
-            <th>F</th>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th colspan="2">Name</th>
+              {% for item in display_dates %} {% if item.type == 'holiday' %}
+              <th colspan="2">{{ item.label }}</th>
+              {% else %}
+              <th>{{ item.label }}</th>
+              {% endif %} {% endfor %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for student in students %}
+            <tr>
+              <td colspan="2">{{ student.full_name }}</td>
+              {% for item in display_dates %} {% if item.type == 'holiday' %}
+              <td colspan="2" style="background-color: #eeeeee">Holiday</td>
+              {% else %} {% if item.date <= current_date %} {% set status =
+              attendance_data[student.id].get(item.date, 'A') %}
+              <td class="{{ 'present' if status == 'P' else 'absent' }}">
+                {{ status }}
+              </td>
+              {% else %}
+              <td>-</td>
+              {% endif %} {% endif %} {% endfor %}
+            </tr>
             {% endfor %}
-          </tr>
-        </thead>
-        <tbody>
-          {% for student in students %}
-          <tr>
-            <td>{{ student.full_name }}</td>
-            {% for day in range(1, 21) %} {% set date_key =
-            '{:02d}-06-2025'.format(day) %}
-            <td>{{ attendance_data[student.id].get(date_key, '') }}</td>
-            {% endfor %}
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+          </tbody>
+        </table>
 
-      <br />
-      <button type="submit" onclick="window.print()">Print Attendance</button>
-    </form>
+        <button type="button" class="btn btn-primary" onclick="window.print()">
+          Print Attendance
+        </button>
+      </form>
+    </div>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
+      crossorigin="anonymous"
+    ></script>
   </body>
 </html>

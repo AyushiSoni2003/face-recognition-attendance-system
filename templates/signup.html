@@ -31,6 +31,12 @@
       <main class="form-container">
         <form method="POST" action="{{ url_for('signup')}}">
           <div class="text-center mb-4">
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png"
+              alt="Book Icon"
+              class="mx-auto success-icon mb-4"
+              style="width: 60px; height: 60px"
+            />
             <h1 class="h4 mt-2 fw-semibold">Create your account</h1>
           </div>
 
@@ -58,9 +64,11 @@
             <label for="password">Password</label>
           </div>
 
-          <button type="submit" class="btn btn-outline-secondary btn-custom">
-            Sign Up
-          </button>
+          <div class="text-center mb-4">
+            <button class="btn btn-primary w-100 btn-custom mb-3" type="submit">
+              Sign Up
+            </button>
+          </div>
 
           <p class="mt-4 text-center text-muted small">
             By signing up, you agree to our

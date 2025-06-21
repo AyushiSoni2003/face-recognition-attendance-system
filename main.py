@@ -1,13 +1,13 @@
 from flask import Flask, request , render_template , flash , redirect, url_for
 from flask_mail import Mail, Message
-from datetime import datetime
+from datetime import datetime , timedelta
 from face_utils import detect_from_webcam , mark_attendance
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from dotenv import load_dotenv
 from werkzeug.security import generate_password_hash , check_password_hash
 import os
-
+import calendar
 app = Flask(__name__)
 
 load_dotenv()  # load variables from .env
@@ -51,7 +51,7 @@ class Attendance(db.Model):
     student_id = db.Column(db.Integer, db.ForeignKey('student.id'), nullable=False)
     student_name = db.Column(db.String(100), nullable = False)
     timestamp = db.Column(db.DateTime, default=datetime.now)
-    status = db.Column(db.String(10), default='Absent')  # 'Present' or 'Absent'
+    status = db.Column(db.String(10), default='A')  
     # Relationship to Student
     student = db.relationship('Student', back_populates='attendances')
 
@@ -195,7 +195,8 @@ def mark_attendance_route():
             student_id=result['Student Id'],
             student_name=result['Student Name'],
             status=result['Attendance'],
-            timestamp = datetime.now().strftime("%d-%m-%Y")
+            timestamp = datetime.now()
+
         ) 
 
         db.session.add(attendance_record)
@@ -204,29 +205,88 @@ def mark_attendance_route():
 
 @app.route('/attendance')
 def attendance():
+    # Get month and year from query params (fallback to current month/year)
+    month = int(request.args.get('month', datetime.now().month))
+    year = int(request.args.get('year', datetime.now().year))
+
+
     current_date = datetime.now().strftime("%d-%m-%Y")
     current_time = datetime.now().strftime("%H:%M %p")
+
+
+    # Get number of days in the month
+    num_days = calendar.monthrange(year, month)[1]
+
+
+    # Build structured list with merged holidays
+    start_date = datetime(year, month, 1)
+    display_dates = []
+    i = 0
+    while i < num_days:
+        current = start_date + timedelta(days=i)
+        day = current.strftime("%a")
+        date_str = current.strftime("%d-%m-%Y")
+
+
+        if day == "Sat" and i + 1 < num_days:
+            next_day = (start_date + timedelta(days=i+1)).strftime("%a")
+            if next_day == "Sun":
+                display_dates.append({
+                    'type': 'holiday',
+                    'label': 'Holiday',
+                    'dates': [
+                        date_str,
+                        (start_date + timedelta(days=i+1)).strftime("%d-%m-%Y")
+                    ]
+                })
+                i += 2
+                continue
+
+
+        display_dates.append({
+            'type': 'date',
+            'label': current.strftime("%d"),  # Only day
+            'date': date_str
+        })
+        i += 1
+
+
+
+
+   # Fetch students
     students = Student.query.all()
     attendance_data = {}
+
+
+    # Fetch attendance records for each student
     for student in students:
         records = Attendance.query.filter_by(student_id=student.id).all()
+       
         student_attendance = {}
         for record in records:
-            student_attendance[record.date] = record.status
+            if record.timestamp:
+                date_str = record.timestamp.strftime("%d-%m-%Y")
+            else:
+                date_str = "Unknown"
+            student_attendance[date_str] = record.status
         attendance_data[student.id] = student_attendance
 
-    return render_template("attendance.html", 
-                        date=current_date, 
+
+    return render_template("attendance.html",
+                        current_date=current_date,
                         time=current_time,
-                        students=students, 
-                        attendance_data=attendance_data)
+                        students=students,
+                        attendance_data=attendance_data,
+                        display_dates=display_dates
+                        )
+
 
 
 @app.route('/data')
 def data():
     return render_template('data.html' , students = Student.query.all())
 
-##  Delete all data from the admin table
+# #  Delete all data from the admin table
 # with app.app_context() :
 #     db.session.query(Admin).delete()
 #     db.session.commit()
