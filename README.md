@@ -1,116 +1,151 @@
-# Face Recognition Attendance System
 
-This project is a **Face Recognition Based Attendance System** built using Python and Flask. It uses a webcam to detect and recognize faces and automatically marks attendance for recognized individuals.
+# 🎯 Face Recognition Attendance System
 
-## 🔧 Features
-
-- Real-time face detection via webcam
-- Attendance recording 
-- Database integration using SQLAlchemy
-- Email notifications for successful enrollments
-- User-friendly web interface with Flask
-- Admin panel to view records and attendance
+A real-time face recognition-based attendance system using **Python**, **OpenCV**,**face_recognition** and **Flask**. Designed for educational and organizational use.
 
 ---
 
-## 📸 Screenshots
+## 📌 Features
+
+- Face Detection and Recognition using Webcam
+- Automatic Attendance Recording
+- Student Enrollment and face Capturing with Email Notification
+- View Enrolled Students and Attendance Records
+- Simple Flask-based Web UI
+
+---
+
+## 🖼️ Screenshots
 
 ### 🏠 Homepage
-> A welcoming dashboard for admins and users.
-
 ![Homepage](screenshots/homepage.png)
 
----
-
 ### 👤 New Student Enrollment Form
-> Add new students to the system with face data.
-
 ![Enrollment Form](screenshots/enroll_student.png)
 
----
-
 ### 📷 Live Face Detection
-> Real-time face recognition from webcam feed.
-
 ![Face Detection](screenshots/image_capture.png)
 
----
-
 ### 📨 Email Confirmation Message
-> Email sent to student after successful enrollment.
-
 ![Email Confirmation](screenshots/mail.png)
 
----
+### 📅 Attendance Marked View
+![Attendance Records](screenshots/attendance_marked.png)
 
-### 📅 Enrollments Records View
-> Shows all enrolled students.
+### 📅 Admin Login Page
+![Attendance Records](screenshots/login.png)
 
+### 📅 Enrolled Students View
 ![Attendance Records](screenshots/enrolled_list.png)
 
----
-
-### 📅 Attendance View
-> Shows all students and their attendance.
-
-![Attendance Records](screenshots/attendance_sheet.png)
+### 🗑️ Attendance Sheet View
+![Delete Record](screenshots/attendance_sheet.png)
 
 ---
 
-## ⚙️ Technologies Used
+## 🗂️ Project Structure
 
-- Python
-- Flask
-- OpenCV
-- face_recognition library
-- SQLAlchemy
-- SMTP for Email (Flask-Mail)
+```
+Face Recognition Attendance System/
+├── app.py
+├── templates/
+├── static/
+├── face_recognition/
+├── screenshots/    
+├── database.db
+├── README.md
+└── requirements.txt
+```
 
 ---
+
+
+## ✅ How Attendance Works
+
+1. Launch the app and enroll the student
+2. A confirmation email is sent to the student
+3. capture image and recognizes faces in real-time
+4. On match, attendance is automatically recorded in the database
+5. Admin can view enrolled students and attendance sheet
+
+
+---
+
+## 📬 Email Feature
+
+On successful enrollment, students receive an email with their registration details.  
+Make sure to configure your Flask-Mail settings as follows:
+
+```python
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USERNAME'] = 'your-email@gmail.com'
+app.config['MAIL_PASSWORD'] = 'your-password'
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USE_SSL'] = False
+```
+
+> 🛡️ **Note:** It's highly recommended to use environment variables for email credentials in production.
+
+
+
+---
+
 
 ## 🚀 Getting Started
 
-**1. Clone the Repository**
+1. **Clone the Repository**
 
 ```bash
-[git clone https://github.com/your-username/face-recognition-attendance.git](https://github.com/AyushiSoni2003/face-recognition-attendance-system.git)
+git clone https://github.com/AyushiSoni2003/face-recognition-attendance-system.git
 cd face-recognition-attendance
+```
 
-**2. Install Requirements**
+2. **Install Requirements**
 
+```bash
 pip install -r requirements.txt
+```
 
-**3. Run the Application**
+3. **Run the Application**
 
+```bash
 python app.py
+```
 
-**4. Access it**
+4. **Access it**
 
-Open your browser and go to http://127.0.0.1:5000/.
+Open your browser and go to:  
+[http://127.0.0.1:5000/](http://127.0.0.1:5000/)
 
-## ✅ How Attendance Works
-- Launch the app , enroll student and capture image 
+---
 
-- Confirmation email is sent to the student
-
-- System detects and recognizes faces
-
-- On match, attendance is marked in the database
-
-- login as admin , and see enrolled students and attendance sheet
 
 ## 📬 Email Feature
-On successful enrollment, students receive an email with their registration details. 
+
+On successful enrollment, students receive an email with their registration details.
+
+---
+
 
 ## 📌 TODO
-- Add user authentication
 
-- Improve UI design
+- [ ] Add user authentication system (Admin / Staff roles)
+- [ ] Improve frontend UI/UX
+- [ ] Store attendance data on the cloud
 
-- Store attendance data in cloud
+---
 
-##🤝 Contributing
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+## 🤝 Contributing
 
-##📃 License
-MIT License
+Pull requests are welcome!  
+For major changes, please open an issue first to discuss what you'd like to change.
+
+---
+
+## 📃 License
+
+This project is licensed under the **MIT License**.  
+Feel free to use, modify, and distribute.
+
+---
